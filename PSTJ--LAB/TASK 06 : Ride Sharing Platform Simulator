@@ -1,0 +1,182 @@
+import java.util.ArrayList;
+import java.util.List;
+
+abstract class User {
+    private int id;
+    private String name;
+
+    public User(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public abstract String getType();
+}
+
+class Rider extends User {
+    public Rider(int id, String name) {
+        super(id, name);
+    }
+
+    @Override
+    public String getType() {
+        return "Rider";
+    }
+}
+
+class Driver extends User {
+    private String vehicleType;
+    private boolean available;
+
+    public Driver(int id, String name, String vehicleType) {
+        super(id, name);
+        this.vehicleType = vehicleType;
+        this.available = true;
+    }
+
+    public String getVehicleType() {
+        return vehicleType;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    @Override
+    public String getType() {
+        return "Driver";
+    }
+}
+
+interface Payment {
+    void pay(double amount);
+}
+
+class CashPayment implements Payment {
+    @Override
+    public void pay(double amount) {
+        System.out.println("Paid ₹" + amount + " using Cash");
+    }
+}
+
+class CardPayment implements Payment {
+    @Override
+    public void pay(double amount) {
+        System.out.println("Paid ₹" + amount + " using Card");
+    }
+}
+
+class Ride {
+    private int rideId;
+    private Rider rider;
+    private Driver driver;
+    private String source;
+    private String destination;
+    private double distance;
+    private double fare;
+
+    public Ride(int rideId, Rider rider, String source,
+                String destination, double distance) {
+        this.rideId = rideId;
+        this.rider = rider;
+        this.source = source;
+        this.destination = destination;
+        this.distance = distance;
+    }
+
+    public void assignDriver(Driver driver) {
+        this.driver = driver;
+        driver.setAvailable(false);
+        calculateFare();
+    }
+
+    private void calculateFare() {
+        fare = 50 + (distance * 15);
+    }
+
+    public void completeRide(Payment payment) {
+        if (driver != null) {
+            payment.pay(fare);
+            driver.setAvailable(true);
+        }
+    }
+
+    public double getFare() {
+        return fare;
+    }
+
+    public String getDetails() {
+        return "Ride ID: " + rideId +
+                ", Rider: " + rider.getName() +
+                ", Driver: " + driver.getName() +
+                ", From: " + source +
+                ", To: " + destination +
+                ", Fare: ₹" + fare;
+    }
+}
+
+class RideSharingPlatform {
+    private List<Rider> riders;
+    private List<Driver> drivers;
+    private List<Ride> rides;
+    private int rideId;
+
+    public RideSharingPlatform() {
+        riders = new ArrayList<>();
+        drivers = new ArrayList<>();
+        rides = new ArrayList<>();
+        rideId = 1;
+    }
+
+    public void addRider(Rider rider) {
+        riders.add(rider);
+    }
+
+    public void addDriver(Driver driver) {
+        drivers.add(driver);
+    }
+
+    public Ride requestRide(Rider rider, String source,
+                            String destination, double distance) {
+
+        Ride ride = new Ride(
+                rideId++,
+                rider,
+                source,
+                destination,
+                distance
+        );
+
+        rides.add(ride);
+        return ride;
+    }
+
+    public boolean assignDriver(Ride ride, String vehicleType) {
+        for (Driver driver : drivers) {
+            if (driver.isAvailable()
+                    && driver.getVehicleType().equalsIgnoreCase(vehicleType)) {
+
+                ride.assignDriver(driver);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public List<Ride> getRides() {
+        return rides;
+    }
+}
