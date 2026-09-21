@@ -1,0 +1,34 @@
+class Ride {
+    void calculateFare(double distance) {
+        System.out.println("Fare: Rs. " + (distance * 10));
+    }
+}
+
+class BikeRide extends Ride {
+    @Override
+    void calculateFare(double distance) {
+        System.out.println("Bike Fare: Rs. " + (distance * 10));
+    }
+}
+
+class CarRide extends Ride {
+    @Override
+    void calculateFare(double distance) {
+        System.out.println("Car Fare: Rs. " + (distance * 20));
+    }
+}
+
+public class RideSharing {
+    public static void main(String[] args) {
+
+        Ride ride;
+
+        ride = new BikeRide();
+        System.out.println("Bike Ride");
+        ride.calculateFare(5);
+
+        ride = new CarRide();
+        System.out.println("Car Ride");
+        ride.calculateFare(5);
+    }
+}
