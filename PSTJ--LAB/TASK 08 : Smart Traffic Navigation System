@@ -1,0 +1,111 @@
+import java.util.Scanner;
+
+abstract class Ride {
+    protected String rideId;
+    protected String passengerName;
+    protected double distance;
+
+    public Ride(String rideId, String passengerName, double distance) {
+        this.rideId = rideId;
+        this.passengerName = passengerName;
+        this.distance = distance;
+    }
+
+    abstract double calculateFare();
+
+    public void displayRideDetails() {
+        System.out.println("Ride ID: " + rideId);
+        System.out.println("Passenger: " + passengerName);
+        System.out.println("Distance: " + distance + " km");
+        System.out.printf("Fare: %.2f%n", calculateFare());
+    }
+}
+
+class BikeRide extends Ride {
+
+    public BikeRide(String rideId, String passengerName, double distance) {
+        super(rideId, passengerName, distance);
+    }
+
+    @Override
+    double calculateFare() {
+        return 30 + (distance * 8);
+    }
+}
+
+class CarRide extends Ride {
+
+    public CarRide(String rideId, String passengerName, double distance) {
+        super(rideId, passengerName, distance);
+    }
+
+    @Override
+    double calculateFare() {
+        return 50 + (distance * 12);
+    }
+}
+
+class PremiumRide extends Ride {
+
+    public PremiumRide(String rideId, String passengerName, double distance) {
+        super(rideId, passengerName, distance);
+    }
+
+    @Override
+    double calculateFare() {
+        return 100 + (distance * 20);
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("===== RIDE SHARING PLATFORM =====");
+
+        System.out.print("Enter Ride ID: ");
+        String rideId = sc.nextLine();
+
+        System.out.print("Enter Passenger Name: ");
+        String passengerName = sc.nextLine();
+
+        System.out.print("Enter Distance (km): ");
+        double distance = sc.nextDouble();
+
+        System.out.println("\nSelect Ride Type:");
+        System.out.println("1. Bike");
+        System.out.println("2. Car");
+        System.out.println("3. Premium");
+
+        System.out.print("Enter your choice: ");
+        int choice = sc.nextInt();
+
+        Ride ride;
+
+        switch (choice) {
+            case 1:
+                ride = new BikeRide(rideId, passengerName, distance);
+                break;
+
+            case 2:
+                ride = new CarRide(rideId, passengerName, distance);
+                break;
+
+            case 3:
+                ride = new PremiumRide(rideId, passengerName, distance);
+                break;
+
+            default:
+                System.out.println("Invalid ride type.");
+                sc.close();
+                return;
+        }
+
+        System.out.println("\n===== RIDE DETAILS =====");
+        ride.displayRideDetails();
+
+        sc.close();
+    }
+}
